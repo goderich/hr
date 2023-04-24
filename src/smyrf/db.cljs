@@ -1,7 +1,7 @@
 (ns smyrf.db)
 
 (def default-db
-  {:name "re-frame"
-   :text "text"
+  {:text "additional text"
    :nodes
-   [{:text "NODE YO"}]})
+   [{:text "first node"
+     :id 0}]})

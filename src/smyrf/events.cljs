@@ -13,3 +13,14 @@
  ::input
  (fn [db [_ text id]]
    (assoc-in db [:nodes id :text] text)))
+
+(defn text-change [text id]
+  (re-frame/dispatch [::input (-> text .-target .-value) id]))
+
+(re-frame/reg-event-db
+ ::add
+ (fn [db _]
+   (let [id (count (:nodes db))
+         node {:text "placeholder" :id id}
+         nodes (conj (:nodes db) node)]
+     (assoc db :nodes nodes))))
