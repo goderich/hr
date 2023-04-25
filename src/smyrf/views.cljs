@@ -14,14 +14,13 @@
               :placeholder "請輸入月薪"
               :on-change #(event-fn :text %)}]
      [:div
-      [:text "Begin: "]
+      "Begin: "
       [:input {:type "date"
                :on-change #(event-fn :begin %)}]
-      [:text "End: "]
+      "End: "
       [:input {:type "date"
                :on-change #(event-fn :end %)}]]
-     [:div ;[:text (-> node :input :text)]
-      [:text (-> node :insurance)]]]))
+     [:div (-> node :insurance)]]))
 
 (defn view-nodes []
   (let [nodes (rf/subscribe [::subs/nodes])
@@ -34,4 +33,4 @@
      [:h1 "仁侍! ClojureScript! Simple!"]
      [view-nodes]
      [:button {:on-click #(rf/dispatch [::events/add])} "+"]
-     [:p [:text @text]]]))
+     [:p @text]]))
