@@ -15,7 +15,9 @@
    (assoc-in db [:nodes id :text] text)))
 
 (defn text-change [text id]
-  (re-frame/dispatch [::input (-> text .-target .-value) id]))
+  (let [str (-> text .-target .-value)]
+    (when (>= (count str) 5)
+      (re-frame/dispatch [::input str id]))))
 
 (re-frame/reg-event-db
  ::add
