@@ -2,6 +2,7 @@
   (:require
    [re-frame.core :as re-frame]
    [smyrf.db :as db]
+   [smyrf.calc :as calc]
    ))
 
 (re-frame/reg-event-db
@@ -9,20 +10,37 @@
  (fn [_ _]
    db/default-db))
 
+(defn insurance-dispatch [db id]
+  (let [{:keys [text begin end] :as input} (get-in db [:nodes id :input])]
+    (if (every? seq [text begin end])
+      (assoc-in db [:nodes id :insurance] (calc/insurance input))
+      db)))
+
 (re-frame/reg-event-db
  ::input
- (fn [db [_ text id]]
-   (assoc-in db [:nodes id :text] text)))
+ (fn [db [_ text id key]]
+   (-> db
+       (assoc-in [:nodes id :input key] text)
+       (insurance-dispatch id))))
 
-(defn text-change [text id]
-  (let [str (-> text .-target .-value)]
+(defmulti value-change :type)
+
+(defmethod value-change :text [{:keys [value node]}]
+  (let [str (-> value .-target .-value)]
     (when (>= (count str) 5)
-      (re-frame/dispatch [::input str id]))))
+      (re-frame/dispatch [::input str (:id node) :text]))))
+
+(defmethod value-change :begin [{:keys [value node]}]
+  (let [str (-> value .-target .-value)]
+    (re-frame/dispatch [::input str (:id node) :begin])))
+
+(defmethod value-change :end [{:keys [value node]}]
+  (let [str (-> value .-target .-value)]
+    (re-frame/dispatch [::input str (:id node) :end])))
 
 (re-frame/reg-event-db
  ::add
  (fn [db _]
-   (let [id (count (:nodes db))
-         node {:text "placeholder" :id id}
+   (let [node {:id (count (:nodes db))}
          nodes (conj (:nodes db) node)]
      (assoc db :nodes nodes))))

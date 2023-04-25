@@ -9,5 +9,5 @@
 
 (re-frame/reg-sub
  ::nodes
- (fn [db _]
+ (fn [db]
    (get db :nodes)))

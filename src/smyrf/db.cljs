@@ -3,5 +3,5 @@
 (def default-db
   {:text "additional text"
    :nodes
-   [{:text "first node"
+   [{:input {:text "first node"}
      :id 0}]})

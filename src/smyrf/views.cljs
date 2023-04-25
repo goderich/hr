@@ -6,16 +6,22 @@
    ))
 
 (defn view-node [node]
-  [:div
-   [:input {:type "text"
-            :placeholder "type here"
-            :on-change #(events/text-change % (:id node))}]
-   [:div
-    [:text "Begin: "]
-    [:input {:type "date"}]
-    [:text "End: "]
-    [:input {:type "date"}]]
-   [:p [:text (:text node)]]])
+  (let [event-fn
+        (fn [type value]
+          (events/value-change {:type type :value value :node node}))]
+    [:div
+     [:input {:type "text"
+              :placeholder "請輸入月薪"
+              :on-change #(event-fn :text %)}]
+     [:div
+      [:text "Begin: "]
+      [:input {:type "date"
+               :on-change #(event-fn :begin %)}]
+      [:text "End: "]
+      [:input {:type "date"
+               :on-change #(event-fn :end %)}]]
+     [:div ;[:text (-> node :input :text)]
+      [:text (-> node :insurance)]]]))
 
 (defn view-nodes []
   (let [nodes (rf/subscribe [::subs/nodes])
