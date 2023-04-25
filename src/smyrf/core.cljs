@@ -7,11 +7,6 @@
    ))
 
 
-(defn dev-setup []
-  (let [debug? false]
-    (when debug?
-      (println "dev mode"))))
-
 (defn ^:dev/after-load mount-root []
   (re-frame/clear-subscription-cache!)
   (let [root-el (.getElementById js/document "app")]
@@ -20,5 +15,4 @@
 
 (defn init []
   (re-frame/dispatch-sync [::events/initialize-db])
-  (dev-setup)
   (mount-root))
