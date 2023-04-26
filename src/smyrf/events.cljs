@@ -13,7 +13,12 @@
 (defn insurance-dispatch [db id]
   (let [{:keys [text begin end] :as input} (get-in db [:nodes id :input])]
     (if (every? seq [text begin end])
-      (assoc-in db [:nodes id :insurance] (calc/insurance input))
+      (->> input
+           :text
+           (js/parseInt)
+           (assoc input :salary)
+           (calc/insurance)
+           (assoc-in db [:nodes id :insurance]))
       db)))
 
 (re-frame/reg-event-db

@@ -3,6 +3,7 @@
    [re-frame.core :as rf]
    [smyrf.subs :as subs]
    [smyrf.events :as events]
+   [smyrf.calc :as calc]
    ))
 
 (defn view-node [node]
@@ -10,27 +11,28 @@
         (fn [type value]
           (events/value-change {:type type :value value :node node}))]
     [:div
+     "月薪："
      [:input {:type "text"
               :placeholder "請輸入月薪"
               :on-change #(event-fn :text %)}]
      [:div
-      "Begin: "
+      "開始："
       [:input {:type "date"
                :on-change #(event-fn :begin %)}]
-      "End: "
+      "  結束："
       [:input {:type "date"
                :on-change #(event-fn :end %)}]]
-     [:div (-> node :insurance)]]))
+     [:div (-> node :insurance :text)]]))
 
-(defn view-nodes []
-  (let [nodes (rf/subscribe [::subs/nodes])
-        views (map view-node @nodes)]
+(defn view-nodes [nodes]
+  (let [views (map view-node nodes)]
     `[:div ~@views]))
 
 (defn main-panel []
-  (let [text (rf/subscribe [::subs/text])]
+  (let [nodes (rf/subscribe [::subs/nodes])]
     [:div
      [:h1 "仁侍! ClojureScript! Simple!"]
-     [view-nodes]
+     [view-nodes @nodes]
      [:button {:on-click #(rf/dispatch [::events/add])} "+"]
-     [:p @text]]))
+     [calc/total @nodes]
+     ]))
