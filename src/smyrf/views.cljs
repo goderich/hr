@@ -4,7 +4,27 @@
    [smyrf.subs :as subs]
    [smyrf.events :as events]
    [smyrf.calc :as calc]
+   [tick.core :as t]
    ))
+
+(defn- date->str [date]
+  (let [y (str (- (t/year date) 1911) "年")]
+    (str y (.monthValue date) "月")))
+
+(defn view-payments [m]
+  (let [header
+        (str "勞保級距為" (:labor-bracket m) "元，"
+             "健保級距為" (:health-bracket m) "元。")
+
+        body
+        (for [p (:payments m)]
+          [:div
+           (str (-> p :month date->str) "："
+                "勞退為" (:pension p) "元，"
+                "健保為" (:health p) "元，"
+                (:days p) "天校方勞保支出為" (:labor p) "元。")])]
+
+    (into [:div] (cons [:div header] body))))
 
 (defn view-node [node]
   (let [event-fn
@@ -22,11 +42,18 @@
       "  結束："
       [:input {:type "date"
                :on-change #(event-fn :end %)}]]
-     [:div (-> node :insurance :text)]]))
+     [view-payments (:insurance node)]]))
 
 (defn view-nodes [nodes]
   (let [views (map view-node nodes)]
     `[:div ~@views]))
+
+(defn view-total [m]
+  [:div
+   (str
+    "總額試算：勞退為" (:pension m) "元，"
+    "健保為" (:health m) "元，"
+    "勞保為" (:labor m) "元。")])
 
 (defn main-panel []
   (let [nodes (rf/subscribe [::subs/nodes])]
@@ -34,5 +61,4 @@
      [:h1 "仁侍! ClojureScript! Simple!"]
      [view-nodes @nodes]
      [:button {:on-click #(rf/dispatch [::events/add])} "+"]
-     [calc/total @nodes]
-     ]))
+     [view-total (calc/total @nodes)]]))
