@@ -8,6 +8,11 @@
    (:text db)))
 
 (re-frame/reg-sub
+ ::details?
+ (fn [db]
+   (get db :details?)))
+
+(re-frame/reg-sub
  ::nodes
  (fn [db]
    (get db :nodes)))

@@ -12,15 +12,17 @@
     (str y (.monthValue date) "月")))
 
 (defn view-payments [ms]
-  (into [:div]
-        (for [m ms]
-          [:div
-           (str (-> m :month date->str) "："
-                "勞退為" (:pension m) "元，"
-                "健保為" (:health m) "元"
-                (:health-comment m) "，"
-                (:days m) "天校方勞保支出為"
-                (:labor m) "元" (:labor-comment m) "。")])))
+  (let [details? (rf/subscribe [::subs/details?])]
+    (when @details?
+      (into [:div]
+            (for [m ms]
+              [:div
+               (str (-> m :month date->str) "："
+                    "勞退為" (:pension m) "元，"
+                    "健保為" (:health m) "元"
+                    (:health-comment m) "，"
+                    (:days m) "天校方勞保支出為"
+                    (:labor m) "元" (:labor-comment m) "。")])))))
 
 (defn view-node [node]
   (let [event-fn
@@ -52,9 +54,15 @@
     "勞保為" (:labor m) "元。")])
 
 (defn main-panel []
-  (let [nodes (rf/subscribe [::subs/nodes])]
+  (let [details? (rf/subscribe [::subs/details?])
+        nodes (rf/subscribe [::subs/nodes])]
     [:div
      [:h1 "Simple 仁侍!"]
+     [:p
+      [:input {:type "checkbox"
+               :checked @details?
+               :on-change #(rf/dispatch [::events/check-details])}]
+      "顯示細算資料？"]
      [view-nodes @nodes]
      [:button {:on-click #(rf/dispatch [::events/add])} "+"]
      [view-total (calc/total @nodes)]]))

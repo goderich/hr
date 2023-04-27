@@ -49,3 +49,8 @@
    (let [node {:id (count (:nodes db))}
          nodes (conj (:nodes db) node)]
      (assoc db :nodes nodes))))
+
+(re-frame/reg-event-db
+ ::check-details
+ (fn [db _]
+   (update db :details? not)))
