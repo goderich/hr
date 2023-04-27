@@ -15,7 +15,9 @@ h1 {
     width: 100%;
     font-size: 50px;
     font-weight: 100;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: rgba(175, 47, 47, 0.5);
     text-rendering: optimizeLegibility;
 }
@@ -48,12 +50,15 @@ h1 {
 
 .meta-container {
     padding: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 .container {
     width: 50%;
     float: left;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .details {
@@ -66,6 +71,7 @@ h1 {
 .footer {
     font-size: 14px;
     color: lightgray;
-    position: relative;
-    left: 35%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

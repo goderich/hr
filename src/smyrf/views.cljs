@@ -61,6 +61,7 @@
     [:div
      [:h1 "Simple 仁侍!"]
      [view-nodes @nodes]
+     [:hr.hline]
      [view-total (calc/total @nodes)]
      [:div.meta-container
       [:div.container
