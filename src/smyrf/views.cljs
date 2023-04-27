@@ -11,20 +11,16 @@
   (let [y (str (- (t/year date) 1911) "年")]
     (str y (.monthValue date) "月")))
 
-(defn view-payments [m]
-  (let [header
-        (str "勞保級距為" (:labor-bracket m) "元，"
-             "健保級距為" (:health-bracket m) "元。")
-
-        body
-        (for [p (:payments m)]
+(defn view-payments [ms]
+  (into [:div]
+        (for [m ms]
           [:div
-           (str (-> p :month date->str) "："
-                "勞退為" (:pension p) "元，"
-                "健保為" (:health p) "元，"
-                (:days p) "天校方勞保支出為" (:labor p) "元。")])]
-
-    (into [:div] (cons [:div header] body))))
+           (str (-> m :month date->str) "："
+                "勞退為" (:pension m) "元，"
+                "健保為" (:health m) "元"
+                (:health-comment m) "，"
+                (:days m) "天校方勞保支出為"
+                (:labor m) "元" (:labor-comment m) "。")])))
 
 (defn view-node [node]
   (let [event-fn
@@ -58,7 +54,7 @@
 (defn main-panel []
   (let [nodes (rf/subscribe [::subs/nodes])]
     [:div
-     [:h1 "仁侍! ClojureScript! Simple!"]
+     [:h1 "Simple 仁侍!"]
      [view-nodes @nodes]
      [:button {:on-click #(rf/dispatch [::events/add])} "+"]
      [view-total (calc/total @nodes)]]))
