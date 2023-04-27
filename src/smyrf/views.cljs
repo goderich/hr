@@ -40,6 +40,7 @@
                :on-change #(event-fn :begin %)}]
       "  結束："
       [:input {:type "date"
+               :value (-> node :input :end)
                :on-change #(event-fn :end %)}]]
      [view-payments (:insurance node)]]))
 

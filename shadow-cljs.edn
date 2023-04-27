@@ -28,4 +28,9 @@
    :dev
    {:compiler-options
     {:closure-defines
-     { }}}}}}
+     { }}}}
+  :release
+  {:target :browser
+   :output-dir "app"
+   :modules
+   {:app {:init-fn smyrf.core/init}}}}}

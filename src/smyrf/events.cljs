@@ -46,7 +46,8 @@
 (re-frame/reg-event-db
  ::add
  (fn [db _]
-   (let [node {:id (count (:nodes db))}
+   (let [end (-> db :nodes last :input :end)
+         node {:id (count (:nodes db)), :input {:end end}}
          nodes (conj (:nodes db) node)]
      (assoc db :nodes nodes))))
 
