@@ -74,7 +74,7 @@
 
 (defn- labor-payments [salary dates]
   (let [[old-dates new-dates] (split-with #(< % cutoff-date-labor) dates)
-        old-bracket (salary-bracket 36000 data-labor-old)
+        old-bracket (salary-bracket salary data-labor-old)
         new-bracket (salary-bracket salary data-labor-new)]
     (merge
      (labor-helper old-bracket old-dates comment-labor-old)
