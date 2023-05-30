@@ -5,6 +5,8 @@
    [smyrf.events :as events]
    [smyrf.calc :as calc]
    [tick.core :as t]
+   [reagent.core :as reagent]
+   ["react-datepicker$default" :as DatePicker]
    ))
 
 (defn- date->str [date]
@@ -24,6 +26,51 @@
                [:div (str (:days m) "天校方勞保支出為"
                           (:labor m) "元" (:labor-comment m))]])))))
 
+(defn datepicker-inner [node]
+  (let [id (:id node)
+        begin-atom (reagent/atom nil)
+        end-atom (reagent/atom (when-let [end (-> node :input :end)]
+                                 (new js/Date end)))]
+    (reagent/create-class
+     {:display-name "date picker"
+
+      :component-did-mount
+      (fn []
+        (println "date picker did mount"))
+
+      :reagent-render
+      (fn []
+        [:div
+         [:span "開始："]
+         [:> DatePicker
+          {:selected @begin-atom
+           :onChange (fn [new-date]
+                       (println id " begin changed to: " (str (t/date new-date)))
+                       (reset! begin-atom new-date)
+                       (rf/dispatch [::events/input (str (t/date new-date)) id :begin]))
+           :selectsStart true
+           :placeholderText "請選擇日期"
+           :dateFormat "yyyy 年 MM 月 dd 日"
+           :todayButton "今日"
+           :calendarStartDay 1
+           :startDate @begin-atom
+           :endDate @end-atom}]
+         [:span "結束："]
+         [:> DatePicker
+          {:selected @end-atom
+           :onChange (fn [new-date]
+                       (println id " end changed to: " (str (t/date new-date)))
+                       (reset! end-atom new-date)
+                       (rf/dispatch [::events/input (str (t/date new-date)) id :end]))
+           :selectsEnd true
+           :placeholderText "請選擇日期"
+           :dateFormat "yyyy 年 MM 月 dd 日"
+           :todayButton "今日"
+           :calendarStartDay 1
+           :startDate @begin-atom
+           :endDate @end-atom
+           :minDate @begin-atom}]])})))
+
 (defn view-node [node]
   (let [event-fn
         (fn [type value]
@@ -34,27 +81,19 @@
       {:type "text"
        :placeholder "請輸入月薪"
        :on-change #(event-fn :text %)}]
-     [:div
-      "開始："
-      [:input {:type "date"
-               :on-change #(event-fn :begin %)}]
-      "  結束："
-      [:input {:type "date"
-               :value (-> node :input :end)
-               :on-change #(event-fn :end %)}]]
+     [datepicker-inner node]
      [view-payments (:insurance node)]]))
 
 (defn view-nodes [nodes]
   (let [views (map view-node nodes)]
-    `[:div ~@views]))
+    `[:div ~@(interpose [:hr.hline] views)]))
 
 (defn view-total [m]
   [:p.total
    [:div (str "總額試算：")]
    [:div (str "勞退為 " (:pension m) " 元")]
    [:div (str "健保為 " (:health m) " 元")]
-   [:div (str "勞保為 " (:labor m) " 元")]
-   ])
+   [:div (str "勞保為 " (:labor m) " 元")]])
 
 (defn main-panel []
   (let [details? (rf/subscribe [::subs/details?])
