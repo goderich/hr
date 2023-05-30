@@ -37,13 +37,14 @@
     (when @details?
       (into [:div.details]
             (for [m ms]
-              [:p
+              [:div
                [:div (str (-> m :month date->str) "：")]
-               [:div (str "勞退為" (:pension m) "元")]
-               [:div (str "健保為" (:health m) "元"
+               [:div (str "勞退為 " (:pension m) " 元")]
+               [:div (str "健保為 " (:health m) " 元"
                           (:health-comment m))]
-               [:div (str (:days m) "天校方勞保支出為"
-                          (:labor m) "元" (:labor-comment m))]])))))
+               [:div (str (:days m) "天校方勞保支出為 "
+                          (:labor m) " 元" (:labor-comment m))]
+               [:p]])))))
 
 (defn datepicker-inner [node]
   (let [id (:id node)
@@ -60,35 +61,35 @@
       :reagent-render
       (fn []
         [:div
-         [:span "開始："]
-         [:> DatePicker
-          {:selected @begin-atom
-           :onChange (fn [new-date]
-                       (println id " begin changed to: " (str (t/date new-date)))
-                       (reset! begin-atom new-date)
-                       (rf/dispatch [::events/input (str (t/date new-date)) id :begin]))
-           :selectsStart true
-           :placeholderText "請選擇日期"
-           :dateFormat "yyyy 年 MM 月 dd 日"
-           :todayButton "今日"
-           :calendarStartDay 1
-           :startDate @begin-atom
-           :endDate @end-atom}]
-         [:span "結束："]
-         [:> DatePicker
-          {:selected @end-atom
-           :onChange (fn [new-date]
-                       (println id " end changed to: " (str (t/date new-date)))
-                       (reset! end-atom new-date)
-                       (rf/dispatch [::events/input (str (t/date new-date)) id :end]))
-           :selectsEnd true
-           :placeholderText "請選擇日期"
-           :dateFormat "yyyy 年 MM 月 dd 日"
-           :todayButton "今日"
-           :calendarStartDay 1
-           :startDate @begin-atom
-           :endDate @end-atom
-           :minDate @begin-atom}]])})))
+         [:div "開始："
+          [:> DatePicker
+           {:selected @begin-atom
+            :onChange (fn [new-date]
+                        (println id " begin changed to: " (str (t/date new-date)))
+                        (reset! begin-atom new-date)
+                        (rf/dispatch [::events/input (str (t/date new-date)) id :begin]))
+            :selectsStart true
+            :placeholderText "請選擇日期"
+            :dateFormat "yyyy年MM月dd日"
+            :todayButton "今日"
+            :calendarStartDay 1
+            :startDate @begin-atom
+            :endDate @end-atom}]]
+         [:div "結束："
+          [:> DatePicker
+           {:selected @end-atom
+            :onChange (fn [new-date]
+                        (println id " end changed to: " (str (t/date new-date)))
+                        (reset! end-atom new-date)
+                        (rf/dispatch [::events/input (str (t/date new-date)) id :end]))
+            :selectsEnd true
+            :placeholderText "請選擇日期"
+            :dateFormat "yyyy年MM月dd日"
+            :todayButton "今日"
+            :calendarStartDay 1
+            :startDate @begin-atom
+            :endDate @end-atom
+            :minDate @begin-atom}]]])})))
 
 (defn view-node [node]
   (let [event-fn
