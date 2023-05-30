@@ -13,6 +13,25 @@
   (let [y (str (- (t/year date) 1911) "年")]
     (str y (.monthValue date) "月")))
 
+(def ^:private sinicize
+  {1 "一"
+   2 "二"
+   3 "三"
+   4 "四"
+   5 "五"
+   6 "六"
+   7 "七"
+   8 "八"
+   9 "九"})
+
+(defn- int->chinese-num [n]
+  (let [dec (let [q (quot n 10)]
+              (cond
+                (> q 1) (str (sinicize q) "十")
+                (= q 1) "十"))
+        un (sinicize (rem n 10))]
+    (str dec un "、")))
+
 (defn view-payments [ms]
   (let [details? (rf/subscribe [::subs/details?])]
     (when @details?
@@ -76,6 +95,7 @@
         (fn [type value]
           (events/value-change {:type type :value value :node node}))]
     [:div
+     [:div (int->chinese-num (inc (:id node)))]
      "月薪："
      [:input.input
       {:type "text"
