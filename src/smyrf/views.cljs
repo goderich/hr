@@ -13,19 +13,10 @@
   (let [y (str (- (t/year date) 1911) "年")]
     (str y (.monthValue date) "月")))
 
-(def ^:private sinicize
-  {1 "一"
-   2 "二"
-   3 "三"
-   4 "四"
-   5 "五"
-   6 "六"
-   7 "七"
-   8 "八"
-   9 "九"})
-
 (defn- int->chinese-num [n]
-  (let [dec (let [q (quot n 10)]
+  (let [sinicize {1 "一", 2 "二", 3 "三", 4 "四", 5 "五",
+                  6 "六", 7 "七", 8 "八", 9 "九"}
+        dec (let [q (quot n 10)]
               (cond
                 (> q 1) (str (sinicize q) "十")
                 (= q 1) "十"))
@@ -50,60 +41,47 @@
   (let [id (:id node)
         begin-atom (reagent/atom nil)
         end-atom (reagent/atom (when-let [end (-> node :input :end)]
-                                 (new js/Date end)))]
+                                 (new js/Date end)))
+        options {:placeholderText "請選擇日期"
+                 :dateFormat "yyyy年MM月dd日"
+                 :todayButton "今日"
+                 :calendarStartDay 1
+                 :startDate @begin-atom
+                 :endDate @end-atom}]
     (reagent/create-class
      {:display-name "date picker"
-
-      :component-did-mount
-      (fn []
-        (println "date picker did mount"))
 
       :reagent-render
       (fn []
         [:div
          [:div "開始："
           [:> DatePicker
-           {:selected @begin-atom
-            :onChange (fn [new-date]
-                        (println id " begin changed to: " (str (t/date new-date)))
-                        (reset! begin-atom new-date)
-                        (rf/dispatch [::events/input (str (t/date new-date)) id :begin]))
-            :selectsStart true
-            :placeholderText "請選擇日期"
-            :dateFormat "yyyy年MM月dd日"
-            :todayButton "今日"
-            :calendarStartDay 1
-            :startDate @begin-atom
-            :endDate @end-atom}]]
+           (merge options
+                  {:selected @begin-atom
+                   :onChange (fn [new-date]
+                               (reset! begin-atom new-date)
+                               (rf/dispatch [::events/input new-date id :begin]))
+                   :selectsStart true})]]
          [:div "結束："
           [:> DatePicker
-           {:selected @end-atom
-            :onChange (fn [new-date]
-                        (println id " end changed to: " (str (t/date new-date)))
-                        (reset! end-atom new-date)
-                        (rf/dispatch [::events/input (str (t/date new-date)) id :end]))
-            :selectsEnd true
-            :placeholderText "請選擇日期"
-            :dateFormat "yyyy年MM月dd日"
-            :todayButton "今日"
-            :calendarStartDay 1
-            :startDate @begin-atom
-            :endDate @end-atom
-            :minDate @begin-atom}]]])})))
+           (merge options
+                  {:selected @end-atom
+                   :onChange (fn [new-date]
+                               (reset! end-atom new-date)
+                               (rf/dispatch [::events/input new-date id :end]))
+                   :selectsEnd true
+                   :minDate @begin-atom})]]])})))
 
 (defn view-node [node]
-  (let [event-fn
-        (fn [type value]
-          (events/value-change {:type type :value value :node node}))]
-    [:div
-     [:div (int->chinese-num (inc (:id node)))]
-     "月薪："
-     [:input.input
-      {:type "text"
-       :placeholder "請輸入月薪"
-       :on-change #(event-fn :text %)}]
-     [datepicker-inner node]
-     [view-payments (:insurance node)]]))
+  [:div
+   [:div (int->chinese-num (inc (:id node)))]
+   "月薪："
+   [:input.input
+    {:type "text"
+     :placeholder "請輸入月薪"
+     :on-change #(events/salary-text-change {:value % :node node})}]
+   [datepicker-inner node]
+   [view-payments (:insurance node)]])
 
 (defn view-nodes [nodes]
   (let [views (map view-node nodes)]

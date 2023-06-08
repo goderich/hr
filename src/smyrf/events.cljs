@@ -11,8 +11,9 @@
    db/default-db))
 
 (defn insurance-dispatch [db id]
-  (let [{:keys [text begin end] :as input} (get-in db [:nodes id :input])]
-    (if (every? seq [text begin end])
+  (let [{:keys [text begin end] :as input} (get-in db [:nodes id :input])
+        ok? (fn [data] (if (string? data) (seq data) data))]
+    (if (every? ok? [text begin end])
       (->> input
            :text
            (js/parseInt)
@@ -23,25 +24,15 @@
 
 (re-frame/reg-event-db
  ::input
- (fn [db [_ text id key]]
+ (fn [db [_ data id key]]
    (-> db
-       (assoc-in [:nodes id :input key] text)
+       (assoc-in [:nodes id :input key] data)
        (insurance-dispatch id))))
 
-(defmulti value-change :type)
-
-(defmethod value-change :text [{:keys [value node]}]
+(defn salary-text-change [{:keys [value node]}]
   (let [str (-> value .-target .-value)]
     (when (>= (count str) 5)
       (re-frame/dispatch [::input str (:id node) :text]))))
-
-(defmethod value-change :begin [{:keys [value node]}]
-  (let [str (-> value .-target .-value)]
-    (re-frame/dispatch [::input str (:id node) :begin])))
-
-(defmethod value-change :end [{:keys [value node]}]
-  (let [str (-> value .-target .-value)]
-    (re-frame/dispatch [::input str (:id node) :end])))
 
 (re-frame/reg-event-db
  ::add

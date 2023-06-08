@@ -30,7 +30,6 @@
   (if (= n 31) 30 n))
 
 (defn- inclusive-date-range
-  "BEGIN and END are assumed to be strings."
   [begin end]
   (let [begin (t/date begin)
         end (t/>> (t/date end) (t/new-period 1 :days))]
@@ -81,7 +80,6 @@
      (labor-helper new-bracket new-dates))))
 
 (defn insurance
-  "Takes SALARY as an integer, and BEGIN and END as strings."
   [{:keys [salary begin end]}]
   (let [dates (inclusive-date-range begin end)
         health (health-payments salary dates)
