@@ -99,6 +99,7 @@
         nodes (rf/subscribe [::subs/nodes])]
     [:div
      [:h1 "Simple 仁侍!"]
+     [:div.header "112年6月更新"]
      [view-nodes @nodes]
      [:hr.hline]
      [view-total (calc/total @nodes)]

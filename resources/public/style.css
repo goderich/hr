@@ -41,15 +41,15 @@ h1 {
     background-color: lightblue;
     color: #ffffff;
     font-size: 25px;
-    width: 50px;
+    width: 40px;
 }
 
 .add:hover {
-    background-color: lightgreen;
+    background-color: lightgray;
 }
 
 .meta-container {
-    padding: 40px;
+    padding: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -66,6 +66,14 @@ h1 {
 }
 
 .total {
+}
+
+.header {
+    font-size: 16px;
+    color: rgba(175, 175, 175);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .footer {
