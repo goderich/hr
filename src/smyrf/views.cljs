@@ -107,6 +107,8 @@
       [:div.container
        [:button.add {:on-click #(rf/dispatch [::events/add])} "+"]]
       [:div.container
+       [:button.add {:on-click #(rf/dispatch [::events/remove])} "-"]]
+      [:div.container
        [:input {:type "checkbox"
                 :checked @details?
                 :on-change #(rf/dispatch [::events/check-details])}]

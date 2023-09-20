@@ -35,13 +35,11 @@ h1 {
 }
 
 .add {
-    position: relative;
-    left: 0%;
     border-radius: 12px;
     background-color: lightblue;
     color: #ffffff;
     font-size: 25px;
-    width: 40px;
+    width: 45px;
 }
 
 .add:hover {

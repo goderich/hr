@@ -42,6 +42,11 @@
      (update db :nodes conj node))))
 
 (re-frame/reg-event-db
+ ::remove
+ (fn [db _]
+   (update db :nodes butlast)))
+
+(re-frame/reg-event-db
  ::check-details
  (fn [db _]
    (update db :details? not)))
