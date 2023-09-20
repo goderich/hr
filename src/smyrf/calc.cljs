@@ -35,14 +35,31 @@
         end (t/>> (t/date end) (t/new-period 1 :days))]
     (t/range begin end)))
 
+(defn- last-day-of-month?
+  [date]
+  (when date
+    (let [ym (-> (t/date date) (t/year-month) (t/inc))
+          y (t/year ym)
+          m (t/int (t/month ym))]
+      (= date (t/dec (t/new-date y m 1))))))
+
+(defn- health-ins-months
+  "Health insurance only counts for the full month,
+  so if the final month is not complete, remove it."
+  [dates]
+  (let [all-months (distinct (map t/year-month dates))
+        full-last-month? (last-day-of-month? (last dates))]
+    (if full-last-month?
+      all-months
+      (butlast all-months))))
+
 (defn- date-health-ins
   ([insurance dates] (date-health-ins insurance dates nil))
   ([insurance dates comment]
    (let [helper
          (fn [m]
            [m {:health insurance, :health-comment comment}])]
-     (->> (map t/year-month dates)
-          (into #{})
+     (->> (health-ins-months dates)
           (map helper)
           (into {})))))
 
@@ -99,5 +116,6 @@
          (sum-fn))))
 
 (comment
-  (->> (insurance {:salary 42000 :begin "2023-01-01" :end "2023-03-17"})
-       ))
+  (->> (insurance {:salary 42000 :begin "2023-01-01" :end "2023-03-17"}))
+
+  )
