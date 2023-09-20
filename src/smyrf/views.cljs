@@ -31,8 +31,10 @@
               [:div
                [:div (str (-> m :month date->str) "：")]
                [:div (str "勞退為 " (:pension m) " 元")]
-               [:div (str "健保為 " (:health m) " 元"
-                          (:health-comment m))]
+               (if (:health m)
+                 [:div (str "健保為 " (:health m) " 元"
+                            (:health-comment m))]
+                 [:div "無健保支出"])
                [:div (str (:days m) "天校方勞保支出為 "
                           (:labor m) " 元" (:labor-comment m))]
                [:p]])))))

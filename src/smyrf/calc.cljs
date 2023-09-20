@@ -101,7 +101,9 @@
   (let [dates (inclusive-date-range begin end)
         health (health-payments salary dates)
         labor (labor-payments salary dates)
-        months (sort (keys health))]
+        ;; Health insurance is zero for the final month if it is incomplete,
+        ;; so we use the dates on labor insurance.
+        months (sort (keys labor))]
     (for [month months]
       (merge (labor month) (health month) {:month month}))))
 
