@@ -38,10 +38,7 @@
 (defn- last-day-of-month?
   [date]
   (when date
-    (let [ym (-> (t/date date) (t/year-month) (t/inc))
-          y (t/year ym)
-          m (t/int (t/month ym))]
-      (= date (t/dec (t/new-date y m 1))))))
+    (-> date t/year-month t/end t/date t/dec (= date))))
 
 (defn- health-ins-months
   "Health insurance only counts for the full month,
@@ -119,5 +116,8 @@
 
 (comment
   (->> (insurance {:salary 42000 :begin "2023-01-01" :end "2023-03-17"}))
+  (last-day-of-month? (t/date "2023-02-28")) ;; => true
+  (last-day-of-month? (t/date "2024-02-28")) ;; => false
+  (last-day-of-month? (t/date "2023-08-31")) ;; => true
 
   )
