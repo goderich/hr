@@ -44,7 +44,7 @@
 (re-frame/reg-event-db
  ::remove
  (fn [db _]
-   (update db :nodes butlast)))
+   (update db :nodes pop)))
 
 (re-frame/reg-event-db
  ::check-details
