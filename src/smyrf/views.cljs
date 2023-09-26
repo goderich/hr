@@ -98,9 +98,12 @@
 
 (defn main-panel []
   (let [details? (rf/subscribe [::subs/details?])
+        egg? (rf/subscribe [::subs/egg?])
         nodes (rf/subscribe [::subs/nodes])]
     [:div
      [:h1 "Simple 仁侍!"]
+     (when @egg?
+       [:img {:src "resources/public/egg.jpg"}])
      [:div.header "112年9月更新"]
      [view-nodes @nodes]
      [:hr.hline]
@@ -116,5 +119,10 @@
                 :on-change #(rf/dispatch [::events/check-details])}]
        "顯示細算資料？"]]
      [:p]
-     [:p.footer
-      "Made by 郭育賢"]]))
+     (if (= (get-in @nodes [2 :input :text]) "520")
+       [:p.shell
+        [:button.egg
+         {:on-click #(rf/dispatch [::events/egg])}
+         (if @egg? "看上面~" "Made by 郭育賢")]]
+       [:p.footer
+        "Made by 郭育賢"])]))

@@ -31,7 +31,7 @@
 
 (defn salary-text-change [{:keys [value node]}]
   (let [str (-> value .-target .-value)]
-    (when (>= (count str) 5)
+    (when (or (>= (count str) 5) (and (= (:id node) 2) (= str "520")))
       (re-frame/dispatch [::input str (:id node) :text]))))
 
 (re-frame/reg-event-db
@@ -50,3 +50,8 @@
  ::check-details
  (fn [db _]
    (update db :details? not)))
+
+(re-frame/reg-event-db
+ ::egg
+ (fn [db _]
+   (assoc db :egg? true)))

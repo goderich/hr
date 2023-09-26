@@ -108,3 +108,19 @@ h1 {
   box-sizing: border-box;
   font-smoothing: antialiased;
 }
+
+.shell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.egg {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  cursor: pointer;
+  font-size: 14px;
+  color: lightgray;
+  text-decoration: underline;
+}
