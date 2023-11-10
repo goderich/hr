@@ -104,7 +104,7 @@
      [:h1 "Simple 仁侍!"]
      (when @egg?
        [:img {:src "resources/public/egg.jpg"}])
-     [:div.header "112年9月更新"]
+     [:div.header "112年11月更新"]
      [view-nodes @nodes]
      [:hr.hline]
      [view-total (calc/total @nodes)]

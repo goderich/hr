@@ -7,11 +7,11 @@
 ;; so they only have to be changed here.
 (def ^:private data-health-old data/health111)
 (def ^:private data-health-new data/health112)
-(def ^:private data-labor-old data/labor111)
-(def ^:private data-labor-new data/labor112)
+(def ^:private data-labor-old data/labor112)
+(def ^:private data-labor-new data/labor113)
 ;; Cutoff points between new and old data.
-(def ^:private cutoff-date-labor (t/date "2023-01-01"))
 (def ^:private cutoff-date-health (t/date "2023-01-01"))
+(def ^:private cutoff-date-labor (t/date "2024-01-01"))
 ;; Comments to put on old data.
 (def ^:private comment-labor-old "（111年勞保級距）")
 (def ^:private comment-health-old "（111年健保級距）")
