@@ -7,13 +7,13 @@
 ;; so they only have to be changed here.
 (def ^:private data-health-old data/health111)
 (def ^:private data-health-new data/health112)
-(def ^:private data-labor-old data/labor112)
-(def ^:private data-labor-new data/labor113)
+(def ^:private data-labor-old data/labor113)
+(def ^:private data-labor-new data/labor114)
 ;; Cutoff points between new and old data.
 (def ^:private cutoff-date-health (t/date "2023-01-01"))
-(def ^:private cutoff-date-labor (t/date "2024-01-01"))
+(def ^:private cutoff-date-labor (t/date "2025-01-01"))
 ;; Comments to put on old data.
-(def ^:private comment-labor-old "（111年勞保級距）")
+(def ^:private comment-labor-old "（113年勞保級距）")
 (def ^:private comment-health-old "（111年健保級距）")
 
 (defn- salary-bracket [salary table]
@@ -115,7 +115,7 @@
          (sum-fn))))
 
 (comment
-  (->> (insurance {:salary 42000 :begin "2023-01-01" :end "2023-03-17"}))
+  (->> (insurance {:salary 42000 :begin "2025-01-01" :end "2025-03-17"}))
   (last-day-of-month? (t/date "2023-02-28")) ;; => true
   (last-day-of-month? (t/date "2024-02-28")) ;; => false
   (last-day-of-month? (t/date "2023-08-31")) ;; => true
